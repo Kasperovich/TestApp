@@ -6,7 +6,7 @@ using TestApp.Data.Models;
 
 namespace TestApp.Data.Interfaces
 {
-    interface ICustomers
+    public interface ICustomers
     {
          IEnumerable<Customer> GetAllCustomer { get; }
     }

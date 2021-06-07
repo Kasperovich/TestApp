@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TestApp.Data.Interfaces;
 using TestApp.Data.Repository;
+using TestApp.Data.mocks;
 using TestApp.Data;
 
 namespace TestApp
@@ -14,18 +15,18 @@ namespace TestApp
     {
         private IConfigurationRoot _confString;
 
-        public Startup(IHostingEnvironment hostEnv)
+        public Startup(IWebHostEnvironment hostEnv)
         {
             _confString = new ConfigurationBuilder().SetBasePath(hostEnv.ContentRootPath).AddJsonFile("dbsettings.json").Build();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDBContent>(options => options.UseSqlServer(_confString.GetConnectionString("DefaultConnection")));
-            services.AddTransient<IOrders, OrderRepository>();
-            services.AddTransient<ICustomers, CustomerRepository>();
+            IServiceCollection serviceCollection = services.AddDbContext<AppDBContent>(options => options.UseSqlServer(_confString.GetConnectionString("DefaultConnection")));
+            //services.AddTransient<IOrders, OrderRepository>();
+            services.AddTransient<IOrders, MockOrders>();
+            //services.AddTransient<ICustomers, CustomerRepository>();
+            services.AddTransient<ICustomers, MockCustomers>();
             services.AddMvc();
         }
 
@@ -34,7 +35,7 @@ namespace TestApp
         {
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
-            app.UseStaticFiles(); 
+            app.UseStaticFiles();
         }
     }
 }
